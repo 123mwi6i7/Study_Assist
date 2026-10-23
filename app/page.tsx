@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { BrandMark } from "@/app/components/brand-mark";
+import { SiteHeader } from "@/app/components/site-header";
 
 const steps = [
   {
@@ -88,28 +90,6 @@ const questions = [
   },
 ];
 
-function BrandMark() {
-  return (
-    <span className="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 32 32" fill="none">
-        <path
-          d="M5.5 8.5c4.1-.9 7.4 0 10.5 2.4v14c-3.1-2.4-6.4-3.3-10.5-2.4v-14Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M26.5 8.5c-4.1-.9-7.4 0-10.5 2.4v14c3.1-2.4 6.4-3.3 10.5-2.4v-14Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path d="M9 13.5c2-.2 3.7.2 5.2 1.1M9 17c2-.2 3.7.2 5.2 1.1M23 13.5c-2-.2-3.7.2-5.2 1.1M23 17c-2-.2-3.7.2-5.2 1.1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </span>
-  );
-}
-
 function SectionHeading({
   eyebrow,
   title,
@@ -141,38 +121,7 @@ function ArrowIcon() {
 export default function Home() {
   return (
     <>
-      <header className="site-header" id="home">
-        <div className="nav-shell">
-          <Link className="brand" href="#home" aria-label="StudyAssist home">
-            <BrandMark />
-            <span>StudyAssist</span>
-          </Link>
-
-          <nav className="desktop-nav" aria-label="Main navigation">
-            <Link href="#home" className="nav-link">Home</Link>
-            <Link href="#how-it-works" className="nav-link">How it works</Link>
-            <Link href="#services" className="nav-link">Find a tutor</Link>
-            <Link href="#become-a-tutor" className="nav-link">Become a tutor</Link>
-          </nav>
-
-          <div className="nav-actions">
-            <Link className="login-link" href="#login">Log in</Link>
-            <Link className="button button-small" href="#sign-up">Sign up</Link>
-          </div>
-
-          <details className="mobile-menu">
-            <summary aria-label="Open navigation menu">Menu</summary>
-            <nav aria-label="Mobile navigation">
-              <Link href="#home">Home</Link>
-              <Link href="#how-it-works">How it works</Link>
-              <Link href="#services">Find a tutor</Link>
-              <Link href="#become-a-tutor">Become a tutor</Link>
-              <Link href="#login">Log in</Link>
-              <Link href="#sign-up">Sign up</Link>
-            </nav>
-          </details>
-        </div>
-      </header>
+      <SiteHeader isHome />
 
       <main>
         <section className="hero-section">
@@ -306,8 +255,8 @@ export default function Home() {
               <span className="invite-icon" aria-hidden="true">✳</span>
               <p className="eyebrow">For tutors</p>
               <h3>Share what you know.</h3>
-              <p>We welcome tutors who care about helping students learn. Tutor applications are not open yet.</p>
-              <Link href="#getting-started" className="text-link">See the launch preview <ArrowIcon /></Link>
+              <p>We welcome tutors who care about helping students learn. Tutor applications start in pending review, and paid opportunities stay unavailable until approval.</p>
+              <Link href="/register" className="text-link">Start a tutor application <ArrowIcon /></Link>
             </div>
           </div>
         </section>
@@ -317,17 +266,17 @@ export default function Home() {
             <div>
               <p className="eyebrow">A quick note before you begin</p>
               <h2>We’re getting ready to help.</h2>
-              <p>This homepage is an early preview. Accounts, assignment uploads, tutor matching, and payments are not available yet.</p>
+              <p>Registration and login are ready once a Supabase project is connected. Assignment uploads, tutor matching, and payments will be built in later stages.</p>
             </div>
             <div className="account-placeholders">
-              <div className="account-placeholder" id="login">
+              <Link className="account-placeholder" href="/login">
                 <span className="placeholder-icon" aria-hidden="true">↗</span>
-                <div><strong>Log in</strong><span>Coming soon</span></div>
-              </div>
-              <div className="account-placeholder" id="sign-up">
+                <div><strong>Log in</strong><span>Open your account</span></div>
+              </Link>
+              <Link className="account-placeholder" href="/register">
                 <span className="placeholder-icon" aria-hidden="true">＋</span>
-                <div><strong>Sign up</strong><span>Coming soon</span></div>
-              </div>
+                <div><strong>Sign up</strong><span>Create an account</span></div>
+              </Link>
             </div>
           </div>
         </section>
@@ -379,8 +328,8 @@ export default function Home() {
           </div>
 
           <div className="policy-notes" aria-label="Policy publication status">
-            <details id="privacy-policy"><summary>Privacy policy</summary><p>The full privacy policy will be published before accounts or document uploads become available.</p></details>
-            <details id="terms-and-conditions"><summary>Terms and conditions</summary><p>The full terms will be published before the tutoring marketplace opens.</p></details>
+            <details id="privacy-policy"><summary>Privacy policy</summary><p>This preview does not contain a finished privacy policy. Final policy text needs review before public launch.</p></details>
+            <details id="terms-and-conditions"><summary>Terms and conditions</summary><p>This preview does not contain finished terms. Final terms need review before public launch.</p></details>
             <details id="refund-policy"><summary>Refund policy</summary><p>The refund policy will be published before payments are enabled.</p></details>
             <details id="academic-integrity-policy"><summary>Academic integrity policy</summary><p>The full academic integrity policy will be published before the service opens. Tutoring is intended to support learning and students’ own work.</p></details>
           </div>
