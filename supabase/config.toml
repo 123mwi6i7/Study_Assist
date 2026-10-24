@@ -117,6 +117,21 @@ enabled = true
 # The maximum file size allowed (e.g. "5MB", "500KB").
 file_size_limit = "50MiB"
 
+[storage.buckets.assignment-files]
+public = false
+file_size_limit = "10MiB"
+allowed_mime_types = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/plain",
+  "image/jpeg",
+  "image/png",
+]
+
+[functions.submit-assignment]
+verify_jwt = true
+
 # Uncomment to configure local storage buckets
 # [storage.buckets.images]
 # public = false

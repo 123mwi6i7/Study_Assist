@@ -1,0 +1,136 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { DashboardShell } from "@/app/components/dashboard/dashboard-shell";
+import { requireRole } from "@/lib/auth/guards";
+import {
+  ASSIGNMENT_COLUMNS,
+  assignmentAssistanceLabel,
+  assignmentSubjectLabel,
+  formatAssignmentDate,
+  formatBudget,
+} from "@/lib/assignments/presentation";
+import { createClient } from "@/lib/supabase/server";
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function AssignmentDetailsContent({ params }: { params: Promise<{ id: string }> }) {
+  const profile = await requireRole("student");
+  const { id } = await params;
+  if (!UUID_PATTERN.test(id)) notFound();
+
+  const supabase = await createClient();
+  const { data: assignment, error } = await supabase
+    .from("assignments")
+    .select(ASSIGNMENT_COLUMNS)
+    .eq("id", id)
+    .eq("student_id", profile.id)
+    .eq("status", "submitted")
+    .maybeSingle();
+
+  if (error || !assignment) notFound();
+
+  const { data: files, error: filesError } = await supabase
+    .from("assignment_files")
+    .select("id, assignment_id, uploaded_by, storage_path, original_filename, file_size_bytes, content_type, created_at")
+    .eq("assignment_id", assignment.id)
+    .eq("uploaded_by", profile.id)
+    .order("created_at", { ascending: true });
+
+  const filesWithLinks = await Promise.all((files ?? []).map(async (file) => {
+    const { data, error: signedUrlError } = await supabase.storage
+      .from("assignment-files")
+      .createSignedUrl(file.storage_path, 60, { download: file.original_filename });
+
+    return {
+      id: file.id,
+      filename: file.original_filename,
+      size: file.file_size_bytes,
+      signedUrl: signedUrlError ? null : data.signedUrl,
+    };
+  }));
+
+  return (
+    <DashboardShell profile={profile} eyebrow="SUBMITTED ASSIGNMENT" title={assignment.title}>
+      <div className="assignment-page-actions">
+        <p>Current status: <span className="assignment-status">Submitted</span></p>
+        <Link className="button button-small button-outline" href="/student/assignments">Back to assignments</Link>
+      </div>
+
+      <section className="assignment-detail-card" aria-labelledby="assignment-overview-heading">
+        <div className="assignment-detail-heading">
+          <div>
+            <p className="dashboard-eyebrow">ASSIGNMENT OVERVIEW</p>
+            <h2 id="assignment-overview-heading">Request details</h2>
+          </div>
+          <span className="assignment-status">Submitted</span>
+        </div>
+
+        <dl className="assignment-detail-grid">
+          <div><dt>Subject</dt><dd>{assignmentSubjectLabel(assignment.subject)}</dd></div>
+          <div><dt>Course</dt><dd>{assignment.course_name || "Not provided"}</dd></div>
+          <div><dt>Requested support</dt><dd>{assignmentAssistanceLabel(assignment.assistance_type)}</dd></div>
+          <div><dt>Academic level</dt><dd>{assignment.academic_level || "Not provided"}</dd></div>
+          <div><dt>Institution</dt><dd>{assignment.institution_name || "Not provided"}</dd></div>
+          <div><dt>Preferred language</dt><dd>{assignment.preferred_language || "Not provided"}</dd></div>
+          <div>
+            <dt>Deadline</dt>
+            <dd>{formatAssignmentDate(assignment.deadline_at, assignment.deadline_timezone)}</dd>
+            <small>{assignment.deadline_timezone}</small>
+          </div>
+          <div><dt>Budget</dt><dd>{formatBudget(assignment.budget_amount_minor, assignment.budget_currency)}</dd></div>
+          <div><dt>Submitted</dt><dd>{formatAssignmentDate(assignment.submitted_at ?? assignment.created_at, assignment.deadline_timezone)}</dd></div>
+        </dl>
+
+        <div className="assignment-detail-copy">
+          <h3>Assignment description</h3>
+          <p>{assignment.description}</p>
+        </div>
+        {assignment.additional_notes && (
+          <div className="assignment-detail-copy">
+            <h3>Additional instructions</h3>
+            <p>{assignment.additional_notes}</p>
+          </div>
+        )}
+      </section>
+
+      <section className="assignment-detail-card assignment-detail-files" aria-labelledby="assignment-files-heading">
+        <div className="assignment-detail-heading">
+          <div>
+            <p className="dashboard-eyebrow">PRIVATE DOCUMENTS</p>
+            <h2 id="assignment-files-heading">Supporting files</h2>
+          </div>
+          <span>{files?.length ?? 0} {(files?.length ?? 0) === 1 ? "file" : "files"}</span>
+        </div>
+
+        {filesError ? (
+          <p className="assignment-alert assignment-alert-error" role="alert">We could not load the file list. Refresh the page and try again.</p>
+        ) : filesWithLinks.length > 0 ? (
+          <ul className="assignment-file-list assignment-detail-file-list">
+            {filesWithLinks.map((file) => (
+              <li key={file.id}>
+                <span>{file.filename}<small>{(file.size / (1024 * 1024)).toFixed(2)} MB</small></span>
+                {file.signedUrl ? (
+                  <a href={file.signedUrl} rel="noreferrer">Download</a>
+                ) : (
+                  <span className="field-hint">Download temporarily unavailable</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No supporting files were found for this assignment.</p>
+        )}
+        <p className="field-hint">Download links expire after one minute. Reload this page to get a fresh link.</p>
+      </section>
+    </DashboardShell>
+  );
+}
+
+export default function AssignmentDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<div className="dashboard-loading">Loading your assignment…</div>}>
+      <AssignmentDetailsContent params={params} />
+    </Suspense>
+  );
+}

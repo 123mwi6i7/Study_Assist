@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import {
   DashboardPlaceholder,
   DashboardShell,
@@ -10,8 +11,24 @@ async function StudentDashboardContent() {
 
   return (
     <DashboardShell profile={profile} eyebrow="STUDENT SPACE" title="Your learning dashboard">
+      <section className="assignment-dashboard-banner" aria-label="Assignment support">
+        <div>
+          <p className="dashboard-eyebrow">LEARNING SUPPORT</p>
+          <h2>Need guidance with an assignment?</h2>
+          <p>Share the instructions and request tutoring, explanations, research guidance, or feedback.</p>
+        </div>
+        <div className="assignment-dashboard-actions">
+          <Link className="button" href="/student/assignments/new">Upload Assignment</Link>
+          <Link className="button button-outline" href="/student/assignments">View assignments</Link>
+        </div>
+      </section>
       <section className="dashboard-grid" aria-label="Student dashboard areas">
-        <DashboardPlaceholder mark="▤" title="Assignments" />
+        <article className="dashboard-placeholder">
+          <span aria-hidden="true">▤</span>
+          <h2>Assignments</h2>
+          <p>View the requests you have submitted and open their supporting documents.</p>
+          <Link className="assignment-card-link" href="/student/assignments">View assignment history <span aria-hidden="true">→</span></Link>
+        </article>
         <DashboardPlaceholder mark="◎" title="Find a tutor" />
         <DashboardPlaceholder mark="↗" title="Quotations" />
         <DashboardPlaceholder mark="◇" title="Orders" />
