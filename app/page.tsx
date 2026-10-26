@@ -66,12 +66,12 @@ const questions = [
   {
     question: "Can I upload my assignment now?",
     answer:
-      "File uploads are not available yet. For now, you can review the steps above. When uploads launch, share only the instructions and information needed to discuss your learning goals.",
+      "Signed-in student accounts can submit an assignment with private supporting files. Tutors only receive access to requests that match their approved subjects.",
   },
   {
     question: "How do I find a tutor?",
     answer:
-      "Tutor profiles and matching are not live yet. The planned service will help students explore tutors by subject and learning needs.",
+      "Browse approved tutor profiles by subject, country, language, availability, expertise, and listed price preferences. You can also compare quotations on your own submitted assignments.",
   },
   {
     question: "How do payments work?",
@@ -133,10 +133,10 @@ export default function Home() {
                 Connect with tutors for thoughtful academic guidance and assignment support. Build your understanding, one question at a time.
               </p>
               <div className="hero-actions">
-                <Link className="button" href="#getting-started">Upload assignment <ArrowIcon /></Link>
-                <Link className="button button-outline" href="#services">Find a tutor</Link>
+                <Link className="button" href="/student/assignments/new">Upload assignment <ArrowIcon /></Link>
+                <Link className="button button-outline" href="/tutors">Find a tutor</Link>
               </div>
-              <p className="hero-note">Uploads and tutor matching are coming soon. Explore how StudyAssist is planned to work.</p>
+              <p className="hero-note">Sign in to submit an assignment or browse real, approved tutor profiles.</p>
               <div className="hero-caption">
                 <span className="caption-icon" aria-hidden="true">✳</span>
                 <span>Designed for students in Kenya and around the world</span>
@@ -193,7 +193,7 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <p className="availability-note"><span aria-hidden="true">✳</span> These steps describe the planned experience. Uploads and tutor matching are not live yet.</p>
+            <p className="availability-note"><span aria-hidden="true">✳</span> Assignment uploads and approved tutor discovery are available after connecting a Supabase project.</p>
           </div>
         </section>
 
@@ -212,7 +212,7 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <p className="section-footnote">Tutor listings are not available yet. Subject availability will be confirmed before launch.</p>
+            <p className="section-footnote">Explore currently approved tutor profiles and their listed subjects in the tutor directory.</p>
           </div>
         </section>
 
@@ -222,7 +222,7 @@ export default function Home() {
               <SectionHeading eyebrow="Made for real student life" title="Support that meets you where you are">
                 Learning looks different for everyone. StudyAssist is being shaped around practical, student-first support.
               </SectionHeading>
-              <Link href="#getting-started" className="text-link">See how to get started <ArrowIcon /></Link>
+              <Link href="/tutors" className="text-link">Browse approved tutors <ArrowIcon /></Link>
             </div>
             <div className="benefit-list">
               {benefits.map((benefit) => (
@@ -234,7 +234,7 @@ export default function Home() {
                   </div>
                 </article>
               ))}
-              <p className="section-footnote">These are planned service benefits. Messaging, pricing, and other platform features are not active yet.</p>
+              <p className="section-footnote">Tutors submit quotations for students to compare. Messaging and online payments are not available.</p>
             </div>
           </div>
         </section>
@@ -265,8 +265,8 @@ export default function Home() {
           <div className="content-shell launch-panel">
             <div>
               <p className="eyebrow">A quick note before you begin</p>
-              <h2>We’re getting ready to help.</h2>
-              <p>Registration and login are ready once a Supabase project is connected. Assignment uploads, tutor matching, and payments will be built in later stages.</p>
+              <h2>Start with the support you need.</h2>
+              <p>Create an account to submit a private assignment request, or browse approved tutors. Selecting a tutor records an engagement as awaiting payment; no payments are processed here.</p>
             </div>
             <div className="account-placeholders">
               <Link className="account-placeholder" href="/login">

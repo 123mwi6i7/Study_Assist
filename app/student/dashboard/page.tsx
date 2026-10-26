@@ -29,8 +29,18 @@ async function StudentDashboardContent() {
           <p>View the requests you have submitted and open their supporting documents.</p>
           <Link className="assignment-card-link" href="/student/assignments">View assignment history <span aria-hidden="true">→</span></Link>
         </article>
-        <DashboardPlaceholder mark="◎" title="Find a tutor" />
-        <DashboardPlaceholder mark="↗" title="Quotations" />
+        <article className="dashboard-placeholder">
+          <span aria-hidden="true">◎</span>
+          <h2>Find a tutor</h2>
+          <p>Search approved tutor profiles by subject, country, language, availability, expertise, and price.</p>
+          <Link className="assignment-card-link" href="/tutors">Browse tutors <span aria-hidden="true">→</span></Link>
+        </article>
+        <article className="dashboard-placeholder">
+          <span aria-hidden="true">↗</span>
+          <h2>Compare quotations</h2>
+          <p>Open a submitted assignment to compare tutor proposals and agree terms.</p>
+          <Link className="assignment-card-link" href="/student/assignments">View assignment quotations <span aria-hidden="true">→</span></Link>
+        </article>
         <DashboardPlaceholder mark="◇" title="Orders" />
         <DashboardPlaceholder mark="＋" title="Payments" />
       </section>

@@ -17,7 +17,7 @@ export function SiteHeader({ isHome = false }: { isHome?: boolean }) {
         <nav className="desktop-nav" aria-label="Main navigation">
           <Link href={sectionLink("home")} className="nav-link">Home</Link>
           <Link href={sectionLink("how-it-works")} className="nav-link">How it works</Link>
-          <Link href={sectionLink("services")} className="nav-link">Find a tutor</Link>
+          <Link href="/tutors" className="nav-link">Find a tutor</Link>
           <Link href={sectionLink("become-a-tutor")} className="nav-link">Become a tutor</Link>
         </nav>
 
@@ -31,7 +31,7 @@ export function SiteHeader({ isHome = false }: { isHome?: boolean }) {
           <nav aria-label="Mobile navigation">
             <Link href={sectionLink("home")}>Home</Link>
             <Link href={sectionLink("how-it-works")}>How it works</Link>
-            <Link href={sectionLink("services")}>Find a tutor</Link>
+            <Link href="/tutors">Find a tutor</Link>
             <Link href={sectionLink("become-a-tutor")}>Become a tutor</Link>
             <Link href="/login">Log in</Link>
             <Link href="/register">Sign up</Link>

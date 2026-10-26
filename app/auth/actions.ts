@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getDashboardPathForProfile } from "@/lib/auth/paths";
 import { getProfileById } from "@/lib/auth/profiles";
 import { REGISTRATION_SUBJECTS } from "@/lib/auth/registration-options";
+import { ASSIGNMENT_SUBJECTS } from "@/lib/assignments/options";
 import {
   MISSING_SUPABASE_CONFIG_MESSAGE,
   getSiteUrl,
@@ -97,9 +98,22 @@ export async function registerUser(
   let tutorBio = "";
 
   if (role === "tutor") {
-    tutorSubjects = formData
+    const selectedSubjects = formData
       .getAll("tutorSubjects")
       .filter((value): value is string => typeof value === "string");
+    const registrationSubjectValues: Record<(typeof REGISTRATION_SUBJECTS)[number], string> = {
+      Mathematics: "mathematics_statistics",
+      Business: "business_management",
+      Accounting: "accounting_finance",
+      "Computer Science": "computer_science_programming",
+      "Research Guidance": "research_methodology",
+      "Academic Writing": "academic_writing_guidance",
+      Proofreading: "proofreading_draft_feedback",
+      Referencing: "referencing_citation_support",
+    };
+    tutorSubjects = selectedSubjects.map(
+      (subject) => registrationSubjectValues[subject as (typeof REGISTRATION_SUBJECTS)[number]],
+    );
     tutorLanguages = textValue(formData, "tutorLanguages")
       .split(",")
       .map((language) => language.trim())
@@ -109,7 +123,8 @@ export async function registerUser(
     if (
       tutorSubjects.length < 1 ||
       tutorSubjects.length > 8 ||
-      tutorSubjects.some((subject) => !REGISTRATION_SUBJECTS.includes(subject as (typeof REGISTRATION_SUBJECTS)[number]))
+      selectedSubjects.some((subject) => !REGISTRATION_SUBJECTS.includes(subject as (typeof REGISTRATION_SUBJECTS)[number])) ||
+      tutorSubjects.some((subject) => !ASSIGNMENT_SUBJECTS.some((option) => option.value === subject))
     ) {
       return errorState("Choose between 1 and 8 subjects you can support.");
     }

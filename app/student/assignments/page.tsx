@@ -17,7 +17,7 @@ async function AssignmentHistoryContent() {
     .from("assignments")
     .select(ASSIGNMENT_COLUMNS)
     .eq("student_id", profile.id)
-    .eq("status", "submitted")
+    .in("status", ["submitted", "awaiting_payment"])
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -57,7 +57,7 @@ async function AssignmentHistoryContent() {
           {assignments.map((assignment) => (
             <article className="assignment-history-card" key={assignment.id}>
               <div className="assignment-history-topline">
-                <span className="assignment-status">Submitted</span>
+                <span className="assignment-status">{assignment.status.replace("_", " ")}</span>
                 <span>{formatAssignmentDate(assignment.created_at, assignment.deadline_timezone)}</span>
               </div>
               <h2>{assignment.title}</h2>
